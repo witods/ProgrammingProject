@@ -6,7 +6,7 @@
  * http://sizzlejs.com/
  *
  * Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors
- * Released under the MIT license
+ * Released under the MIT LICENSE
  * http://jquery.org/license
  *
  * Date: 2013-07-03T13:48Z
@@ -1004,7 +1004,7 @@ rootjQuery = jQuery(document);
  * http://sizzlejs.com/
  *
  * Copyright 2013 jQuery Foundation, Inc. and other contributors
- * Released under the MIT license
+ * Released under the MIT LICENSE
  * http://jquery.org/license
  *
  * Date: 2013-07-03

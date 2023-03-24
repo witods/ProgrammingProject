@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"org.unbescape"},{"l":"org.unbescape.css"},{"l":"org.unbescape.csv"},{"l":"org.unbescape.html"},{"l":"org.unbescape.java"},{"l":"org.unbescape.javascript"},{"l":"org.unbescape.json"},{"l":"org.unbescape.properties"},{"l":"org.unbescape.uri"},{"l":"org.unbescape.xml"}]

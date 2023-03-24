@@ -19,7 +19,7 @@
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
- * Released under the MIT license.
+ * Released under the MIT LICENSE.
  * http://jquery.org/license
  *
  * http://api.jqueryui.com/category/ui-core/
@@ -313,7 +313,7 @@ $.ui.plugin = {
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
- * Released under the MIT license.
+ * Released under the MIT LICENSE.
  * http://jquery.org/license
  *
  * http://api.jqueryui.com/jQuery.widget/
@@ -861,7 +861,7 @@ var widget = $.widget;
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
- * Released under the MIT license.
+ * Released under the MIT LICENSE.
  * http://jquery.org/license
  *
  * http://api.jqueryui.com/position/
@@ -1368,7 +1368,7 @@ var position = $.ui.position;
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
- * Released under the MIT license.
+ * Released under the MIT LICENSE.
  * http://jquery.org/license
  *
  * http://api.jqueryui.com/menu/
@@ -1999,7 +1999,7 @@ var menu = $.widget( "ui.menu", {
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
- * Released under the MIT license.
+ * Released under the MIT LICENSE.
  * http://jquery.org/license
  *
  * http://api.jqueryui.com/autocomplete/
