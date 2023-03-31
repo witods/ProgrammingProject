@@ -3,11 +3,10 @@ package Pages;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.*;
+import java.util.Arrays;
 
-import Dialogs.Dialog_login_requiredFields;
-
-
-public class LoginPage extends JFrame{
+public class LoginPage {
     private JPanel loginPanel;
     private JTextField inpUsername;
     private JPasswordField inpPassword;
@@ -15,84 +14,76 @@ public class LoginPage extends JFrame{
     private JButton createAccountButton;
     private JButton forgotPasswordButton;
     private JLabel loginLabel;
+    private MainFrame frame;
 
+    public LoginPage(MainFrame f) {
 
-//    constructor + actions of buttons
-    public LoginPage(String pageTitle) {
-        super(pageTitle);
+        loginButton.addActionListener(new LoginListener());
+        createAccountButton.addActionListener(new CreateAccountListener());
+        forgotPasswordButton.addActionListener(new ForgotPasswordListener());
+        this.frame = f;
 
-//        general settings of JFrame
-            this.setContentPane(this.loginPanel);
-            this.setTitle(pageTitle);
-            this.setBounds(0,0,1000,800);
-            setLocationRelativeTo(null);
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setVisible(true);
-
-
-        loginButton.addActionListener(new ActionListener() {
-            /**
-             * @param e Wanneer de user op de Login button klikt zal XYZ gebeuren
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                //controleer of Username en paswoord zijn ingevuld
-                if (inpUsername.getText().equals("") || inpPassword.getText().equals("")) {
-                    Dialog_login_requiredFields.showDialog();
-                    //JOptionPane.showMessageDialog(LoginPage.this, "Please fill in both username and password.");
-                }
-
-                // TODO: 10/03/2023 controleer of user en paswoord in de db zitten
-                    //indien niet in db geef foutmelding en keer terug naar pagina --> Dialog name = Dialog_
-                    if (false){
-                        JOptionPane.showMessageDialog(LoginPage.this, "Username and or password are not correct. Please try again. \n If you have not yet created an account, please click on the create account button.");
-                    }
-
-                    // TODO: 10/03/2023 indien in de database, ga naar menu pagina
-
-
-            }
-        });
-        createAccountButton.addActionListener(new ActionListener() {
-            /**
-             * @param e the event to be processed when the create account button is clicked
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // set login page visible to false
-                disposeLoginPage();
-
-                // display create account page
-                CreateAccountPage.showCreateAccountPage();
-            }
-        });
-
-        //TODO add logic for forgot password button
-        forgotPasswordButton.addActionListener(new ActionListener() {
-            /**
-             * Invoked when the forgot password button is clicked.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
+    }
+    public JPanel getMainPanel() {
+        return  this.loginPanel;
     }
 
-    /**
-     * This method will dispose the login page
-     */
-    public void disposeLoginPage (){
-        this.dispose();
+    public User getUserFromDataBase(String n) {
+        String DBusername, DBuserPassword, DBuserFirstName, DBuserLastName,DBuserEmail;
+        int DBuserAge = 18, DBuserCredits = 1000;
+        try {
+            Statement statement = frame.databaseConnection.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet result = statement.executeQuery("SELECT * FROM USERS WHERE userName = \"" + n + "\";");
+           if(result.first()==true) {
+               result.first();
+              DBusername = result.getString("userName");
+               DBuserPassword = result.getString("password");
+               DBuserFirstName = result.getString("firstName");
+               DBuserLastName = result.getString("lastName");
+               DBuserEmail = result.getString("email");
+               System.out.println("Got user succesfully");
+              return new User(DBusername,DBuserFirstName,DBuserLastName,DBuserPassword,DBuserAge,DBuserEmail,DBuserCredits);
+            }else {
+               System.out.println("Username does not exist");
+               return null;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("Couldnt connect to database");
+            return null;
+        }
+    }
+    public void checkPassword(User u) {
+        String passwordInput = new String(inpPassword.getPassword());
+        System.out.println(passwordInput);
+        if(u.getUserPassword().equals(passwordInput)) {
+            System.out.println("Login Succesfull");
+        }
+    }
+    public class LoginListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            String usernameInput = inpUsername.getText();
+            frame.setCurrentUser(getUserFromDataBase(usernameInput));
+            checkPassword(frame.getCurrentUser());
+        }
     }
 
+    public class CreateAccountListener implements ActionListener {
 
-    /**
-     * this public method will create a new login screen
-     */
-    public static void showLoginPage() {
-        JFrame loginPage = new LoginPage("Login");
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            frame.getCreateAccountPage();
+        }
     }
 
+    public class ForgotPasswordListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
 }

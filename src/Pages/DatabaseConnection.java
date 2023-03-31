@@ -6,12 +6,12 @@ public class DatabaseConnection {
     private static final String username = "2223PROGPROJGR3";
     private static final String password = "QSUOMC";
 
-    private Connection connection;
+    private Connection con;
 
     public DatabaseConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(url, username, password);
+            con = DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException e) {
             System.out.println("JDBC driver not found!");
         } catch (SQLException e) {
@@ -20,12 +20,12 @@ public class DatabaseConnection {
     }
 
     public Connection getConnection() {
-        return connection;
+        return con;
     }
 
     public void close() {
         try {
-            connection.close();
+            con.close();
             System.out.println("Database connection closed!");
         } catch (SQLException e) {
             System.out.println("Failed to close database connection!");
