@@ -9,6 +9,7 @@ import java.util.*;
 public class HangMan extends JFrame {
     private String wordToGuess;
     private String hint;
+    private String credits;
     private int guessesLeft;
     private char[] lettersGuessed;
     private ArrayList<JButton> btns = new ArrayList<JButton>();
@@ -50,6 +51,7 @@ public class HangMan extends JFrame {
     private JLabel lblWordToGuess;
     private JLabel lblEncryptedWord;
     private JLabel lblGuesses;
+    private JLabel lblCredits;
 
     private void createUIComponents() {
         imgHangMan = new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource("img/hm6.png")));
@@ -59,6 +61,7 @@ public class HangMan extends JFrame {
         String[] wordAndHint = getRandomWord();
         wordToGuess = wordAndHint[0];
         hint = wordAndHint[1];
+        credits = getCredits();
         guessesLeft = 6;
         lettersGuessed = new char[wordToGuess.length()];
         btns.addAll(Arrays.asList(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9,
@@ -66,6 +69,7 @@ public class HangMan extends JFrame {
                 btn19, btn20, btn21, btn22, btn23, btn24, btn25, btn26));
 
         lblWordToGuess.setText("Hint: " + hint);
+        lblCredits.setText("Aantal credits: " + credits);
 
         for (int i = 0; i < wordToGuess.length(); i++) {
             lettersGuessed[i] = '_';
@@ -140,6 +144,8 @@ public class HangMan extends JFrame {
                 for (JButton btn : btns) {
                     btn.setEnabled(false);
                 }
+                updateCredits(-10);
+                lblCredits.setText("Aantal credits: " + getCredits());
             } else {
                 lblGuesses.setText("Letter niet gevonden. " + guessesLeft + " aantal resterende kansen.");
                 imgHangMan.setIcon(new ImageIcon(getClass().getClassLoader().getResource("img/hm" + guessesLeft + ".png")));
@@ -150,6 +156,8 @@ public class HangMan extends JFrame {
                 for (JButton btn : btns) {
                     btn.setEnabled(false);
                 }
+                updateCredits(20);
+                lblCredits.setText("Aantal credits: " + getCredits());
             } else {
                 lblGuesses.setText("Letter gevonden!");
             }
@@ -166,7 +174,44 @@ public class HangMan extends JFrame {
         }
         lblEncryptedWord.setText(sb.toString());
     }
-    public String[] getRandomWord() {
+
+    private String getCredits() {
+        String credits = "";
+
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        Connection connection = databaseConnection.getConnection();
+
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT amount FROM CREDITS WHERE userID = 5");
+
+            while (rs.next()) {
+                credits = Integer.toString(rs.getInt("amount"));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Failed to execute query!");
+        } finally {
+            databaseConnection.close();
+        }
+
+        return credits;
+    }
+
+    private void updateCredits(int amount) {
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        Connection connection = databaseConnection.getConnection();
+
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate("UPDATE CREDITS SET amount = amount + " + amount + " WHERE userID = 5");
+        } catch (SQLException ex) {
+            System.out.println("Failed to execute query!");
+        } finally {
+            databaseConnection.close();
+        }
+    }
+
+    private String[] getRandomWord() {
         String[] wordAndHint = new String[2];
 
         DatabaseConnection databaseConnection = new DatabaseConnection();
