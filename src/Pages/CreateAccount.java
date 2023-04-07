@@ -25,12 +25,14 @@ public class CreateAccount {
     private JLabel confirmPasswordLabel;
     private JLabel lastNameMessage;
     private JLabel createAccountLabel;
+    private JButton backButton;
     private MainFrame frame;
 
     //Mainframe wordt doorgegeven om aan de user en database connectie te kunnen aanroepen
     public CreateAccount(MainFrame f) {
         AlreadyHaveAccountButton.addActionListener(new AlreadyHaveAccountListener());
         CreateAccountConfirmButton.addActionListener(new CreateAccountListener());
+        backButton.addActionListener(new backActionListener());
         this.frame = f;
     }
 
@@ -127,5 +129,9 @@ public class CreateAccount {
                 throw new RuntimeException(ex);
             }
         }
+    }
+    public class backActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {frame.getLoginPage();}
     }
 }

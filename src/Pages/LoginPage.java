@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
-import java.util.Arrays;
 
 public class LoginPage {
 
@@ -19,6 +17,7 @@ public class LoginPage {
     private JLabel loginLabel;
     private JLabel userNameMessage;
     private JLabel passwordMessage;
+    private JButton backButton;
     private MainFrame frame;
 
     //Mainframe wordt doorgegeven om aan de user en database connectie te kunnen aanroepen
@@ -43,7 +42,6 @@ public class LoginPage {
         String passwordInput = new String(inpPassword.getPassword());
         if(u.getUserPassword().equals(passwordInput)) {
             //frame.getHomePage();
-            System.out.println("SUcces");
         } else passwordMessage.setText("Wrong password, try again");
     }
     public class LoginListener implements ActionListener {
@@ -67,7 +65,6 @@ public class LoginPage {
     }
 
     public class CreateAccountListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
             frame.getCreateAccountPage();
@@ -75,8 +72,11 @@ public class LoginPage {
     }
 
     public class ForgotPasswordListener implements ActionListener{
-
         @Override
         public void actionPerformed(ActionEvent e) {frame.getForgotPassword();}
+    }
+    public class backActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {}
     }
 }

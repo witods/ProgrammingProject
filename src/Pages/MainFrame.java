@@ -14,7 +14,7 @@ public class MainFrame extends JFrame {
     public DatabaseConnection databaseConnection;
 
     //Database connectie en panels aanmaken voor de verschillende schermen weer te geven
-    MainFrame() {
+    public MainFrame() {
 
         databaseConnection = new DatabaseConnection(this);
         loginPage = new LoginPage(this);

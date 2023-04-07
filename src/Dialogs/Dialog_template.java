@@ -1,7 +1,6 @@
 package Dialogs;
 
 import MainApp.Main;
-import Pages.CreateAccountPage;
 
 import javax.swing.*;
 import java.awt.event.*;
