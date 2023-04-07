@@ -5,24 +5,30 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import Dialogs.Dialog_login_requiredFields;
+import TriviaGame.TriviaGamePage;
 
 
 public class LoginPage extends JFrame{
-    private JPanel loginPanel;
+    private JPanel pagePanel;
     private JTextField inpUsername;
     private JPasswordField inpPassword;
     private JButton loginButton;
     private JButton createAccountButton;
     private JButton forgotPasswordButton;
     private JLabel loginLabel;
+    private JPanel loginButtonPanel;
+    private JPanel loginInputPanel;
+    private JPanel titlePanel;
+    private JPanel loginPanel;
+    private JPanel parentPanel;
 
 
-//    constructor + actions of buttons
+    //    constructor + actions of buttons
     public LoginPage(String pageTitle) {
         super(pageTitle);
 
 //        general settings of JFrame
-            this.setContentPane(this.loginPanel);
+            this.setContentPane(this.pagePanel);
             this.setTitle(pageTitle);
             this.setBounds(0,0,1000,800);
             setLocationRelativeTo(null);
@@ -75,7 +81,9 @@ public class LoginPage extends JFrame{
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                parentPanel.remove(loginPanel);
+                parentPanel.add(new TriviaGamePage().getGamePanel());
+                parentPanel.revalidate();
             }
         });
     }

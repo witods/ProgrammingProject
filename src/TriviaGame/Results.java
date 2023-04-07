@@ -15,7 +15,7 @@ public class Results {
     private String difficulty;
     private String question;
     private String correct_answer;
-    private List<String> incorrect_answers;
+    private ArrayList<String> incorrect_answers;
 
     public String getType() {
         return type;

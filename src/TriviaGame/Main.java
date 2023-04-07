@@ -4,6 +4,7 @@ package TriviaGame;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -91,7 +92,7 @@ public class Main {
 
             //make variabeles which contain the incoming info
             Trivia t = new Gson().fromJson(reader, Trivia.class);
-            List<Results> results = t.getResults();
+            ArrayList<Results> results = t.getResults();
 
             //close the reader
             reader.close();
