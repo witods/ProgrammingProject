@@ -49,7 +49,7 @@ public class LoginPage extends JFrame{
                         JOptionPane.showMessageDialog(LoginPage.this, "Username and or password are not correct. Please try again. \n If you have not yet created an account, please click on the create account button.");
                     }
 
-                    // TODO: 10/03/2023 indien in de database, ga naar menu pagina
+                    // TODO: 10/03/2023 indien in de database, ga naar home pagina
 
 
             }

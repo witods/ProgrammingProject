@@ -191,7 +191,7 @@ public class HangMan extends JFrame {
         } catch (SQLException ex) {
             System.out.println("Failed to execute query!");
         } finally {
-            databaseConnection.close();
+            databaseConnection.closeConnection();
         }
 
         return credits;
@@ -207,7 +207,7 @@ public class HangMan extends JFrame {
         } catch (SQLException ex) {
             System.out.println("Failed to execute query!");
         } finally {
-            databaseConnection.close();
+            databaseConnection.closeConnection();
         }
     }
 
@@ -228,7 +228,7 @@ public class HangMan extends JFrame {
         } catch (SQLException ex) {
             System.out.println("Failed to execute query!");
         } finally {
-            databaseConnection.close();
+            databaseConnection.closeConnection();
         }
         return wordAndHint;
     }

@@ -23,7 +23,7 @@ public class DatabaseConnection {
         return connection;
     }
 
-    public void close() {
+    public void closeConnection() {
         try {
             connection.close();
             System.out.println("Database connection closed!");
