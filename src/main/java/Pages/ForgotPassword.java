@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.Properties;
 
 public class ForgotPassword {
 
@@ -27,6 +26,7 @@ public class ForgotPassword {
     private JLabel changePasswordMessage;
     private JButton loginPageReturn;
     private JButton backButton;
+    private JButton newMailButton;
     CardLayout card = (CardLayout) cardLayoutPanel.getLayout();
     public ForgotPassword(MainFrame f){
         this.frame = f;
@@ -35,6 +35,7 @@ public class ForgotPassword {
         changePasswordButton.addActionListener(new changePasswordListener());
         loginPageReturn.addActionListener(new returnToLoginPageListener());
         backButton.addActionListener(new backActionListener());
+        newMailButton.addActionListener(new newMailListener());
     }
 
     public JPanel getMainPanel(){return this.mainPanel;}
@@ -146,5 +147,11 @@ public class ForgotPassword {
     public class backActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {frame.getLoginPage();}
+    }
+    public class newMailListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            card.show(cardLayoutPanel,"getMailPanel");
+        }
     }
 }

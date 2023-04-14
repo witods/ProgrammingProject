@@ -1,18 +1,22 @@
 package SpaceInvaders;
 
-import java.awt.*;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CannonBullet extends PowerUp{
+public class EMP extends PowerUp {
+
+
     private MainGame game;
-    public CannonBullet(int x, int y,MainGame m) {
+    public EMP(int x, int y,MainGame m) {
         super(x,y);
         game = m;
     }
 
     public void activatePower(){
-        game.getPlayer().setCannonActive(true);
+        game.setEMPActive(true);
+        game.getEnemyBullets().clear();
         startPowerDuration();
     }
     public void startPowerDuration(){
@@ -20,7 +24,7 @@ public class CannonBullet extends PowerUp{
         TimerTask timer = new TimerTask() {
             @Override
             public void run() {
-                game.getPlayer().setRapidFireActive(true);
+              game.setEMPActive(false);
             }
         };
         t.schedule(timer,20000);

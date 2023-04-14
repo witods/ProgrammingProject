@@ -9,13 +9,15 @@ public class Obstacle {
     private int obstacleX;
     private int obstacleY;
     private Rectangle hitbox;
+    private int maxHitpoints;
     private int hitPoints;
     public Obstacle(int width, int height, int x, int y){
         this.obstacleWidth = width;
         this.obstacleHeight = height;
         this.obstacleX = x;
         this.obstacleY = y;
-        this.hitPoints = 3;
+        this.maxHitpoints = 3;
+        hitPoints = maxHitpoints;
         this.hitbox = new Rectangle(obstacleX,obstacleY,obstacleWidth,obstacleHeight);
     }
     public int getObstacleWidth() {return obstacleWidth;}
@@ -32,6 +34,9 @@ public class Obstacle {
     }
     public void hitTaken(){hitPoints--;}
 
+    public void repair(){
+        hitPoints = maxHitpoints;
+    }
     public void drawObstacle(Graphics2D g){
         g.setColor(new Color(0,177,30));
         g.fillRect(obstacleX,obstacleY,obstacleWidth,obstacleHeight);

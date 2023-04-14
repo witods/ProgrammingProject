@@ -27,8 +27,9 @@ public class MainFrame extends JFrame {
         //gameCanvas = new MainGame();
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //this.setResizable(false)
-        this.getContentPane().add(gameCanvas);
+        this.setResizable(false);
+        //this.getContentPane().add(gameCanvas);
+        this.setContentPane(loginPage.getMainPanel());
 
         this.pack();
         this.setTitle("Pixel Playtime");

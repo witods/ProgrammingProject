@@ -6,26 +6,31 @@ import java.awt.event.*;
 import java.util.*;
 
 
-public class MainGame extends Canvas implements Runnable {
+public class MainGame extends Canvas {
 
-    private Image canvasBuffer;
+    private Font dialogFont;
     private Player player;
     private ArrayList<Obstacle> obstacles = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Projectile> playerBullets = new ArrayList<>();
     private ArrayList<Projectile> enemyBullets = new ArrayList<>();
-
-    private MovementActionListener movementAction;
+    private ArrayList<PowerUp> powerUps = new ArrayList<>();
+    private int enemiesKilled;
     private int currentWidth;
     private int currentHeight;
+    private boolean EMPActive;
+    private boolean blackholeActive;
+    private Blackhole blackhole;
+    private int blackholeCenterX;
+    private int blackholeCenterY;
+    private Thread blackholeThread;
     private boolean gamePaused;
-    GameLoop moveBulletsLoop;
     private boolean gameRunning;
+    private GameLoop moveBulletsLoop;
 
     public MainGame() {
         setupCanvas();
         setupGame();
-
     }
 
     public void setupCanvas() {
@@ -33,10 +38,12 @@ public class MainGame extends Canvas implements Runnable {
         currentHeight = 540;
         this.setSize(currentWidth, currentHeight);
         this.setBackground(new Color(66, 96, 112));
+        dialogFont = new Font(Font.DIALOG_INPUT, Font.BOLD, 18);
         this.setFocusable(true);
         this.addKeyListener(new MovementActionListener());
         this.addComponentListener(new ResizeActionListener());
         this.addMouseListener(new MouseActionListener());
+
     }
 
     public void setupGame() {
@@ -52,20 +59,52 @@ public class MainGame extends Canvas implements Runnable {
             obstacles.add(new Obstacle(55, 35, nextXPos, 400));
             nextXPos += intersection;
         }
+        Thread.currentThread().setPriority(10);
         moveBulletsLoop = new GameLoop();
-
+        moveBulletsLoop.setPriority(8);
         gameRunning = true;
         moveBulletsLoop.start();
     }
+
+    public int getCurrentWidth(){return currentWidth;}
+    public int getCurrentHeight(){return currentHeight;}
+    public Player getPlayer() {return player;}
+
+    public ArrayList<Obstacle> getObstacles() {return obstacles;}
+
+    public ArrayList<Enemy> getEnemies() {return enemies;}
+
+    public ArrayList<Projectile> getPlayerBullets() {return playerBullets;}
+
+    public ArrayList<Projectile> getEnemyBullets() {return enemyBullets;}
     public void createEnemies(){
-        enemies.add(new Enemy(-30,10,25,25,3));
+        enemies.add(new Enemy(-30,10,25,25,1,this));
     }
+    public void setEnemiesKilled(){this.enemiesKilled++;}
+    public void setEMPActive(boolean EMPActive) {
+        this.EMPActive = EMPActive;
+    }
+
+    public void setBlackholeActive(boolean blackholeActive) {
+        this.blackholeActive = blackholeActive;
+    }
+    public void setBlackhole(Blackhole b){
+        blackhole = b;
+        blackholeThread = new Thread(blackhole);
+    }
+    public void setBlackholeCenter(int x, int y){
+        blackholeCenterX = x;
+        blackholeCenterY = y;
+    }
+
     public void update(Graphics g) {
-        Graphics2D bufferG;
-        canvasBuffer = createImage(currentWidth, currentHeight);
-        bufferG = (Graphics2D) canvasBuffer.getGraphics();
+
+        Image canvasBuffer = createImage(currentWidth, currentHeight);
+        Graphics2D bufferG= (Graphics2D) canvasBuffer.getGraphics();
         bufferG.setBackground(new Color(66, 96, 112));
+
         player.drawPlayer(bufferG);
+
         for (Obstacle e : obstacles) {
             e.drawObstacle(bufferG);
             bufferG.draw(e.getHitbox());
@@ -82,8 +121,18 @@ public class MainGame extends Canvas implements Runnable {
             p.drawProjectile(bufferG);
             bufferG.draw(p.getHitbox());
         }
+        for(PowerUp powerUp : powerUps){
+            powerUp.draw(bufferG);
+        }
+        if(blackholeActive){
+            blackhole.drawBackhole(bufferG);
+        }
         if (gamePaused) {
             drawPause(bufferG);
+        }else{
+            g.setColor(new Color(255, 255, 255, 175));
+            g.setFont(dialogFont);
+            g.drawString("Enemies killed: "+Integer.toString(enemiesKilled),20,20);
         }
         g.drawImage(canvasBuffer, 0, 0, this);
     }
@@ -97,8 +146,7 @@ public class MainGame extends Canvas implements Runnable {
         String msg = "Press ENTER...";
         g.setColor(new Color(255, 255, 255, 175));
 
-        Font msgFont = new Font(Font.DIALOG_INPUT, Font.BOLD, 18);
-        g.setFont(msgFont);
+        g.setFont(dialogFont);
         g.drawString(msg, 20, 20);
 
         int pauseWidth = currentWidth / 50;
@@ -124,12 +172,24 @@ public class MainGame extends Canvas implements Runnable {
         for (Obstacle o: obstacles) {
             if(o.getHitbox().intersects(p.getHitbox()))playerBullets.remove(p);
         }
-        Iterator<Enemy> itr = enemies.iterator();
-        while(itr.hasNext()){
-            Enemy e = itr.next();
+        Iterator<Enemy> itrEnemy = enemies.iterator();
+        while(itrEnemy.hasNext()){
+            Enemy e = itrEnemy.next();
             if(e.getHitbox().intersects(p.getHitbox())){
                 playerBullets.remove(p);
-                if(e.enemyHit(1))itr.remove();
+                if(e.enemyHit(p.getDamage(),powerUps)) {
+                    itrEnemy.remove();
+                    enemiesKilled++;
+                }
+            }
+        }
+        Iterator<PowerUp> itrPowerUp = powerUps.iterator();
+        while (itrPowerUp.hasNext()){
+            PowerUp powerUp = itrPowerUp.next();
+            if(p.getHitbox().intersects(powerUp.getHitbox())){
+                powerUp.activatePower();
+                playerBullets.remove(p);
+                itrPowerUp.remove();
             }
         }
     }
@@ -143,11 +203,14 @@ public class MainGame extends Canvas implements Runnable {
             enemyBullets.remove(p);
         }
     }
-    @Override
-    public void run() {
+    public void checkBlackholeCollision(Blackhole b){
+        Iterator<Enemy> itr = enemies.iterator();
+        while(itr.hasNext()){
+            Enemy e = itr.next();
+            if(b.getHitbox().intersects(e.getHitbox())) itr.remove();
+        }
 
     }
-
     public class MovementActionListener extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
@@ -179,38 +242,67 @@ public class MainGame extends Canvas implements Runnable {
     public class MouseActionListener extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
-            player.shotBullet(playerBullets);
+            player.shootProjectile(playerBullets);
         }
     }
 
     public class GameLoop extends Thread {
         int counter;
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                createEnemies();
+            }
+        };
         @Override
         public void run() {
+            timer.schedule(task,0,1000);
             while(gameRunning){
-                if(counter==10) {
+
+               /* if(counter==10) {
                     createEnemies();
                     counter = 0;
                 }
-                for(int i = 0;i<playerBullets.size();i++) {
-                    if(!playerBullets.get(i).movePlayerProjectile())playerBullets.remove(playerBullets.get(i));
-                    else checkPlayerBulletCollision(playerBullets.get(i));
-                }
-                for(int i =0; i<enemies.size();i++){
-                    enemies.get(i).moveEnemy(currentWidth,currentHeight);
-                    enemies.get(i).shootProjectile(enemyBullets);
-                }
-                for(int i = 0; i<enemyBullets.size();i++){
-                    if(!enemyBullets.get(i).moveEnemyProjectile(currentHeight))enemyBullets.remove(enemyBullets.get(i));
-                    else checkEnemyBulletCollision(enemyBullets.get(i));
+                counter++;*/
+                if(!blackholeActive){
+
+                    for(int i = 0;i<playerBullets.size();i++) {
+                        if(!playerBullets.get(i).movePlayerProjectile())playerBullets.remove(playerBullets.get(i));
+                        else checkPlayerBulletCollision(playerBullets.get(i));
+                    }
+                    for(int i =0; i<enemies.size();i++){
+                        enemies.get(i).moveEnemy(currentWidth,currentHeight,blackholeActive);
+                        if(!EMPActive){
+                            enemies.get(i).shootProjectile(enemyBullets);
+                        }
+                    }
+                    for(int i = 0; i<enemyBullets.size();i++){
+                        if(!enemyBullets.get(i).moveEnemyProjectile(currentHeight))enemyBullets.remove(enemyBullets.get(i));
+                        else checkEnemyBulletCollision(enemyBullets.get(i));
+                    }
+
+                    try {
+                        Thread.sleep(66);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    counter++;
+                }else{
+                    if(!blackholeThread.isAlive()){
+                        blackholeThread.start();
+                    }
+                    for(int i = 0;i<enemies.size();i++){
+                        enemies.get(i).gravityPull(blackholeCenterX,blackholeCenterY);
+                        checkBlackholeCollision(blackhole);
+                        try {
+                            Thread.sleep(20);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
                 repaint();
-                try {
-                    Thread.sleep(66);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            counter++;
             }
         }
     }

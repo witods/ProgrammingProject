@@ -15,8 +15,10 @@ public class DatabaseConnection {
             con = DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException e) {
             System.out.println("JDBC driver not found!");
+            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Failed to connect to database!");
+            e.printStackTrace();
         }
     }
 

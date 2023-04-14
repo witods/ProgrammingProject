@@ -16,10 +16,8 @@ public class Player {
     private int playerHeight;
     private boolean switchCannons;
     private Rectangle playerHitbox;
-    private ArrayList<Projectile>Bullets;
-    private String powerUp;
-    private boolean powerUpActive;
-
+    private boolean cannonActive;
+    private boolean rapidFireActive;
     public Player(int width, int height,int h) {
         this.playerWidth = width;
         this.playerHeight = height;
@@ -55,6 +53,12 @@ public class Player {
         this.playerX = x;
         this.playerY = y;
     }
+    public void setCannonActive(boolean cannonActive) {
+        this.cannonActive = cannonActive;
+    }
+    public void setRapidFireActive(boolean rapidFireActive) {
+        this.rapidFireActive = rapidFireActive;
+    }
     public int getPlayerX() {return playerX;}
     public int getPlayerY() {return playerY;}
     public int getPlayerWidth(){return playerWidth;}
@@ -65,16 +69,30 @@ public class Player {
         g.setColor(Color.red);
         g.fillRect(playerX,playerY,playerWidth,playerHeight);
     }
-    public void shotBullet(ArrayList a){
+    public void shootProjectile(ArrayList a){
+        if(cannonActive){
+            shootCannon(a);
+        }
+        if(rapidFireActive){
+            shootRapidFire(a);
+        }
+        else shootNormalBullet(a);
+    }
+    public void shootNormalBullet(ArrayList a){
         if(switchCannons){
-            a.add(new Projectile(3,12,getPlayerX()+10,getPlayerY()-15,Color.CYAN));
+            a.add(new Projectile(getPlayerX()+10,getPlayerY()-15));
             switchCannons = false;
         }else {
-            a.add(new Projectile(3,12,getPlayerX()+getPlayerWidth()-13,getPlayerY()-15,Color.cyan));
+            a.add(new Projectile(getPlayerX()+getPlayerWidth()-13,getPlayerY()-15));
             switchCannons = true;
         }
     }
-    public void setPowerUp(String s){
-        this.powerUp = s;
+    public void shootCannon(ArrayList a){
+        a.add(new Projectile(getPlayerX()-getPlayerWidth(),getPlayerY()-27,"cannon"));
+    }
+    public void shootRapidFire(ArrayList a){
+        a.add(new Projectile(getPlayerX()+(playerWidth/2),getPlayerY()-25));
+        a.add(new Projectile(getPlayerX()+6,getPlayerY()-15));
+        a.add(new Projectile(getPlayerX()+getPlayerWidth()-6,getPlayerY()-15));
     }
 }

@@ -11,24 +11,37 @@ public class Projectile {
     private int damage;
     private Color color;
     private Rectangle hitbox;
-    private String projectileType = "bullet";
+    private String projectileType;
 
-    public Projectile(int width,int height, int x, int y,Color c){
-        this.projectileWidth = width;
-        this.projectileHeight = height;
+    public Projectile(int x, int y){
         this.projectileX = x;
         this.projectileY = y;
-        this.color = c;
+        this.projectileWidth = 3;
+        this.projectileHeight = 12;
+        this.hitbox = new Rectangle(projectileX,projectileY,projectileWidth,projectileHeight);
+        this.damage = 1;
+        color = Color.cyan;
+    }
+    public Projectile(int x, int y,String s){
+        this(x,y);
+        projectileType = s;
+        setupProjectile();
         this.hitbox = new Rectangle(projectileX,projectileY,projectileWidth,projectileHeight);
     }
     public int getProjectileX() {return projectileX;}
     public int getProjectileY() {return projectileY;}
+    public int getDamage(){return damage;}
     public Rectangle getHitbox(){return hitbox;}
     public String getProjectileType(){return projectileType;}
-    public void setProjectileDamage(int x){this.damage = x;}
-    public void setPowerUp(){
 
-    }
+   public void setupProjectile(){
+        switch(projectileType){
+            case "cannon" : color = new Color(6,63,185); projectileWidth = 18; projectileHeight = 18; damage = 3;
+            break;
+            case "enemy" : color = Color.yellow; projectileWidth = 2; projectileHeight = 8;
+            break;
+        }
+   }
 
     public void drawProjectile(Graphics2D g){
         g.setColor(this.color);
