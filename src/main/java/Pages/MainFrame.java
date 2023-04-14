@@ -20,16 +20,20 @@ public class MainFrame extends JFrame {
 
     //Database connectie en panels aanmaken voor de verschillende schermen weer te geven
     public MainFrame() {
-
         databaseConnection = new DatabaseConnection(this);
+        //TEST LOGIN
         loginPage = new LoginPage(this);
-        //homePage = new HomePage(this);
+        this.setContentPane(loginPage.getMainPanel());
+
+        //TEST SPACE INVADERS
         //gameCanvas = new MainGame();
+        //this.getContentPane().add(gameCanvas);
+
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
-        //this.getContentPane().add(gameCanvas);
-        this.setContentPane(loginPage.getMainPanel());
+
+
 
         this.pack();
         this.setTitle("Pixel Playtime");
