@@ -4,12 +4,13 @@ package SpaceInvaders;
 import java.util.ArrayList;
 
 public class RepairObstacles extends PowerUp{
-    private MainGame game;
-    public RepairObstacles(int x, int y,MainGame g){
-        super(x,y);
+
+    public RepairObstacles(int x, int y,MainGame g,String s){
+        super(x,y,g,s);
+
     }
     public void activatePower(){
-        for(Obstacle o : game.getObstacles()) {
+        for(Obstacle o : super.game.getObstacles()) {
             o.repair();
         }
     }

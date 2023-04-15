@@ -8,6 +8,7 @@ import java.util.*;
 
 public class MainGame extends Canvas {
 
+    private Graphics2D bufferG;
     private Font dialogFont;
     private Player player;
     private ArrayList<Obstacle> obstacles = new ArrayList<>();
@@ -24,8 +25,10 @@ public class MainGame extends Canvas {
     private int blackholeCenterX;
     private int blackholeCenterY;
     private Thread blackholeThread;
+    private boolean drawString;
     private boolean gamePaused;
     private boolean gameRunning;
+    private String enemiesKilledMSG;
     private GameLoop moveBulletsLoop;
 
     public MainGame() {
@@ -38,11 +41,12 @@ public class MainGame extends Canvas {
         currentHeight = 540;
         this.setSize(currentWidth, currentHeight);
         this.setBackground(new Color(66, 96, 112));
-        dialogFont = new Font(Font.DIALOG_INPUT, Font.BOLD, 18);
+        dialogFont = new Font(Font.DIALOG_INPUT, Font.BOLD, 16);
         this.setFocusable(true);
         this.addKeyListener(new MovementActionListener());
         this.addComponentListener(new ResizeActionListener());
         this.addMouseListener(new MouseActionListener());
+
 
     }
 
@@ -56,9 +60,10 @@ public class MainGame extends Canvas {
         int intersection = (currentWidth / 4) - 15;
         int nextXPos = intersection / 2;
         for (int i = 0; i < 4; i++) {
-            obstacles.add(new Obstacle(55, 35, nextXPos, 400));
+            obstacles.add(new Obstacle(55, 30, nextXPos, 400));
             nextXPos += intersection;
         }
+        enemiesKilledMSG = "Enemies killed: " + enemiesKilled;
         Thread.currentThread().setPriority(10);
         moveBulletsLoop = new GameLoop();
         moveBulletsLoop.setPriority(8);
@@ -78,9 +83,9 @@ public class MainGame extends Canvas {
 
     public ArrayList<Projectile> getEnemyBullets() {return enemyBullets;}
     public void createEnemies(){
-        enemies.add(new Enemy(-30,10,25,25,1,this));
+        enemies.add(new Enemy(-30,35,25,25,1,this));
     }
-    public void setEnemiesKilled(){this.enemiesKilled++;}
+    public void setEnemiesKilled(int x){this.enemiesKilled+=x;}
     public void setEMPActive(boolean EMPActive) {
         this.EMPActive = EMPActive;
     }
@@ -100,40 +105,35 @@ public class MainGame extends Canvas {
     public void update(Graphics g) {
 
         Image canvasBuffer = createImage(currentWidth, currentHeight);
-        Graphics2D bufferG= (Graphics2D) canvasBuffer.getGraphics();
+        bufferG = (Graphics2D) canvasBuffer.getGraphics();
         bufferG.setBackground(new Color(66, 96, 112));
-
         player.drawPlayer(bufferG);
-
         for (Obstacle e : obstacles) {
             e.drawObstacle(bufferG);
-            bufferG.draw(e.getHitbox());
-        }
-        for(Enemy e : enemies) {
-            e.drawEnemy(bufferG);
-            bufferG.draw(e.getHitbox());
-        }
-        for (Projectile p : playerBullets) {
-            p.drawProjectile(bufferG);
-            bufferG.draw(p.getHitbox());
-        }
-        for(Projectile p : enemyBullets){
-            p.drawProjectile(bufferG);
-            bufferG.draw(p.getHitbox());
-        }
-        for(PowerUp powerUp : powerUps){
-            powerUp.draw(bufferG);
-        }
-        if(blackholeActive){
-            blackhole.drawBackhole(bufferG);
         }
         if (gamePaused) {
             drawPause(bufferG);
         }else{
-            g.setColor(new Color(255, 255, 255, 175));
-            g.setFont(dialogFont);
-            g.drawString("Enemies killed: "+Integer.toString(enemiesKilled),20,20);
+            for(Enemy e : enemies) {
+                e.drawEnemy(bufferG);
+            }
+            for (Projectile p : playerBullets) {
+                p.drawProjectile(bufferG);
+            }
+            for(Projectile p : enemyBullets){
+                p.drawProjectile(bufferG);
+            }
+            for(PowerUp powerUp : powerUps){
+                powerUp.draw(bufferG);
+            }
+            if(blackholeActive){
+                blackhole.drawBackhole(bufferG);
+            }
+            bufferG.setColor(new Color(255, 255, 255, 175));
+            bufferG.setFont(dialogFont);
+            bufferG.drawString("Enemies killed: "+Integer.toString(enemiesKilled),20,20);
         }
+
         g.drawImage(canvasBuffer, 0, 0, this);
     }
 
@@ -145,7 +145,6 @@ public class MainGame extends Canvas {
     public void drawPause(Graphics2D g) {
         String msg = "Press ENTER...";
         g.setColor(new Color(255, 255, 255, 175));
-
         g.setFont(dialogFont);
         g.drawString(msg, 20, 20);
 
@@ -188,8 +187,8 @@ public class MainGame extends Canvas {
             PowerUp powerUp = itrPowerUp.next();
             if(p.getHitbox().intersects(powerUp.getHitbox())){
                 powerUp.activatePower();
+                powerUp.draw(bufferG);
                 playerBullets.remove(p);
-                itrPowerUp.remove();
             }
         }
     }
@@ -241,7 +240,7 @@ public class MainGame extends Canvas {
 
     public class MouseActionListener extends MouseAdapter {
         @Override
-        public void mouseClicked(MouseEvent e) {
+        public void mousePressed(MouseEvent e) {
             player.shootProjectile(playerBullets);
         }
     }
@@ -257,7 +256,7 @@ public class MainGame extends Canvas {
         };
         @Override
         public void run() {
-            timer.schedule(task,0,1000);
+            timer.schedule(task,0,750);
             while(gameRunning){
 
                /* if(counter==10) {

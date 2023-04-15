@@ -72,9 +72,11 @@ public class Player {
     public void shootProjectile(ArrayList a){
         if(cannonActive){
             shootCannon(a);
+            return;
         }
         if(rapidFireActive){
             shootRapidFire(a);
+            return;
         }
         else shootNormalBullet(a);
     }
@@ -88,7 +90,7 @@ public class Player {
         }
     }
     public void shootCannon(ArrayList a){
-        a.add(new Projectile(getPlayerX()-getPlayerWidth(),getPlayerY()-27,"cannon"));
+        a.add(new Projectile(getPlayerX()+getPlayerWidth()/2,getPlayerY()-27,"cannon"));
     }
     public void shootRapidFire(ArrayList a){
         a.add(new Projectile(getPlayerX()+(playerWidth/2),getPlayerY()-25));

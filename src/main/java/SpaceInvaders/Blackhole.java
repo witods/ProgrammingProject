@@ -13,11 +13,9 @@ public class Blackhole extends PowerUp implements Runnable{
     private int blackholeY;
     private int blackHoleWidth;
     private int blackHoleHeight;
-    private MainGame game;
     private Rectangle blackholeHitbox;
-    public Blackhole(int x, int y,MainGame g){
-        super(x,y);
-        game = g;
+    public Blackhole(int x, int y,MainGame g,String s){
+        super(x,y,g,s);
         setBlackholeXandY();
         blackHoleWidth = 50;
         blackHoleHeight = 50;
@@ -77,6 +75,7 @@ public class Blackhole extends PowerUp implements Runnable{
             }
             i++;
         }
+        game.setEnemiesKilled(game.getEnemies().size());
         game.getEnemies().clear();
         game.setBlackholeActive(false);
     }

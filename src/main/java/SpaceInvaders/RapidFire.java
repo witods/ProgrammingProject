@@ -1,13 +1,13 @@
 package SpaceInvaders;
 
+import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class RapidFire extends PowerUp {
-    private MainGame game;
-    public RapidFire(int x, int y,MainGame m) {
-        super(x,y);
-        game = m;
+
+    public RapidFire(int x, int y,MainGame g,String s) {
+        super(x,y,g,s);
     }
 
     public void activatePower(){
@@ -19,7 +19,7 @@ public class RapidFire extends PowerUp {
         TimerTask timer = new TimerTask() {
             @Override
             public void run() {
-                game.getPlayer().setRapidFireActive(true);
+                game.getPlayer().setRapidFireActive(false);
             }
         };
         t.schedule(timer,20000);

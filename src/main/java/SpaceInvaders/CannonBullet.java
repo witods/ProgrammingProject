@@ -5,10 +5,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CannonBullet extends PowerUp{
-    private MainGame game;
-    public CannonBullet(int x, int y,MainGame m) {
-        super(x,y);
-        game = m;
+    public CannonBullet(int x, int y,MainGame g,String s) {
+        super(x,y,g,s);
+        game = g;
     }
 
     public void activatePower(){
@@ -20,7 +19,7 @@ public class CannonBullet extends PowerUp{
         TimerTask timer = new TimerTask() {
             @Override
             public void run() {
-                game.getPlayer().setRapidFireActive(true);
+                game.getPlayer().setCannonActive(false);
             }
         };
         t.schedule(timer,20000);

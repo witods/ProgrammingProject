@@ -30,7 +30,7 @@ public class Enemy {
     public int getHitpoints(){return hitpoints;}
 
     public void drawEnemy(Graphics2D g){
-        g.setColor(Color.yellow);
+        g.setColor(Color.DARK_GRAY);
         g.fillRect(enemyX,enemyY,enemyWidth,enemyHeight);
     }
     public void moveEnemy(int screenWidth, int screenHeight, boolean b){
@@ -75,19 +75,19 @@ public class Enemy {
         return false;
     }
     public void enemyDied(ArrayList<PowerUp> a){
-        int randomNumber = (int) (Math.random()*600+1);
+        int randomNumber = (int) (Math.random()*350+1);
         int powerUpX = enemyX +(enemyWidth - 15)/2;
         int powerUpY = enemyY + (enemyHeight-15)/2;
         switch (randomNumber){
-            case 1 : a.add(new CannonBullet(powerUpX,powerUpY,game));
+            case 1 : a.add(new CannonBullet(powerUpX,powerUpY,game,"Cannon"));
             break;
-            case 50 : a.add(new RapidFire(powerUpX,powerUpY,game));
+            case 50 : a.add(new RapidFire(powerUpX,powerUpY,game,"Rapid fire"));
             break;
-            case 100 : a.add(new EMP(powerUpX,powerUpY,game));
+            case 100 : a.add(new EMP(powerUpX,powerUpY,game,"EMP"));
             break;
-            case 150 : a.add(new Blackhole(powerUpX,powerUpY,game));
+            case 150 : a.add(new Blackhole(powerUpX,powerUpY,game,"Blackhole"));
             break;
-            case 200 : a.add(new RepairObstacles(powerUpX,powerUpY,game));
+            case 200 : a.add(new RepairObstacles(powerUpX,powerUpY,game,"Repair"));
             break;
         }
     }

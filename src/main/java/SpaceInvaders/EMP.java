@@ -1,5 +1,6 @@
 package SpaceInvaders;
 
+import java.awt.*;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -8,10 +9,8 @@ import java.util.TimerTask;
 public class EMP extends PowerUp {
 
 
-    private MainGame game;
-    public EMP(int x, int y,MainGame m) {
-        super(x,y);
-        game = m;
+    public EMP(int x, int y,MainGame g,String s) {
+        super(x,y,g,s);
     }
 
     public void activatePower(){
