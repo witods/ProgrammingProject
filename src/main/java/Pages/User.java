@@ -1,5 +1,8 @@
 package Pages;
+import java.sql.*;
+
 public class User {
+    private int userID;
     private String userName;
     private String userFirstName;
     private String userLastName;
@@ -8,10 +11,12 @@ public class User {
     private int userCredits;
     private int userBet;
     private int recoverCode;
+    private Timestamp recoveryTime;
 
     //Constructor die variablen initialiseerd met gegevens uit de database
-    public User(String uName,String uFirstName, String uLastName, String p, String m) {
+    public User(int ID,String uName,String uFirstName, String uLastName, String p, String m) {
 
+        this.userID = ID;
         this.userName = uName;
         this.userFirstName = uFirstName;
         this.userLastName = uLastName;
@@ -20,6 +25,7 @@ public class User {
     }
 
     //Getters en setters voor Instance fields
+    public int getUserID(){return userID;}
     public String getUserName() {
         return userName;
     }
@@ -57,11 +63,10 @@ public class User {
     public void giveUserCredits(int b) {
         userCredits += b;
     }
-    public int getRecoverCode() {return recoverCode;
-    }
-
+    public int getRecoverCode() {return recoverCode;}
+    public Timestamp getRecoveryTime(){return recoveryTime;}
     public void setRecoverCode(int recoverCode) {
         this.recoverCode = recoverCode;
     }
-
+    public void setRecoveryTime(Timestamp t){this.recoveryTime = t;}
 }

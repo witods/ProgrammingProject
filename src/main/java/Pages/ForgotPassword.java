@@ -67,24 +67,28 @@ public class ForgotPassword {
     }
     public void setCode(){
         int code = (int) (Math.random() * 10000000);
-        String updateSQL = "UPDATE USERS SET recoveryCode = ? WHERE userName = ?";
-        String getCode = "SELECT recoveryCode FROM USERS WHERE userName= ?";
+        String setCodeSQL = "INSERT INTO `USER RECOVERY` (userID,userName,recoveryCode,recoveryTimestamp)VALUES (?,?,?,?)";
+        String getRecoverySQL = "SELECT recoveryCode,recoveryTimestamp FROM `USER RECOVERY` WHERE userName= ?";
         String mailText = "Hello," + frame.getCurrentUser().getUserName() + ". Your recovery code is: ";
 
+        Timestamp time = new Timestamp(System.currentTimeMillis());
         PreparedStatement statement;
 
         try {
-            statement = frame.databaseConnection.getConnection().prepareStatement(updateSQL,ResultSet.CONCUR_UPDATABLE);
-            statement.setInt(1,code);
-            statement.setString(2, inputUserName.getText());
+            statement = frame.databaseConnection.getConnection().prepareStatement(setCodeSQL,ResultSet.CONCUR_UPDATABLE);
+            statement.setInt(1,frame.getCurrentUser().getUserID());
+            statement.setString(2,frame.getCurrentUser().getUserName());
+            statement.setInt(3,code);
+            statement.setTimestamp(4,time);
             statement.executeUpdate();
 
-            statement = frame.databaseConnection.getConnection().prepareStatement(getCode,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            statement = frame.databaseConnection.getConnection().prepareStatement(getRecoverySQL,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
             statement.setString(1,inputUserName.getText());
             ResultSet codeSet = statement.executeQuery();
 
             if(codeSet.first()){
                 frame.getCurrentUser().setRecoverCode(codeSet.getInt("recoveryCode"));
+                frame.getCurrentUser().setRecoveryTime(codeSet.getTimestamp("recoveryTimestamp"));
                 card.show(cardLayoutPanel,"enterCodePanel");
                 frame.revalidate();
             }else sendRecoveryMessage.setText("Couldnt fetch a recovery code");
@@ -99,11 +103,13 @@ public class ForgotPassword {
     public void validateCode(){
         String inputCode = new String(codeInput.getPassword());
         int userCode = Integer.parseInt(inputCode);
-
-        if (userCode==frame.getCurrentUser().getRecoverCode()){
-            card.show(cardLayoutPanel,"changePasswordPanel");
-            frame.revalidate();
-        }else recoveryMessage.setText("Recovery code doesn't match!");
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        if(currentTime.getTime()-frame.getCurrentUser().getRecoveryTime().getTime()<900000){
+            if (userCode==frame.getCurrentUser().getRecoverCode()){
+                card.show(cardLayoutPanel,"changePasswordPanel");
+                frame.revalidate();
+            }else recoveryMessage.setText("Recovery code doesn't match!");
+        }else recoveryMessage.setText("Recovery code expired, please request a new one");
     }
     public void setNewPassword(){
         String newPass = new String(inputNewPassword.getPassword());
@@ -151,7 +157,7 @@ public class ForgotPassword {
     public class newMailListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            card.show(cardLayoutPanel,"getMailPanel");
+            card.show(cardLayoutPanel,"getEmailPanel");
         }
     }
 }

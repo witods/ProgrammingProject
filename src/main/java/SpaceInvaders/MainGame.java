@@ -187,7 +187,7 @@ public class MainGame extends Canvas {
             PowerUp powerUp = itrPowerUp.next();
             if(p.getHitbox().intersects(powerUp.getHitbox())){
                 powerUp.activatePower();
-                powerUp.draw(bufferG);
+                itrPowerUp.remove();
                 playerBullets.remove(p);
             }
         }
@@ -258,12 +258,6 @@ public class MainGame extends Canvas {
         public void run() {
             timer.schedule(task,0,750);
             while(gameRunning){
-
-               /* if(counter==10) {
-                    createEnemies();
-                    counter = 0;
-                }
-                counter++;*/
                 if(!blackholeActive){
 
                     for(int i = 0;i<playerBullets.size();i++) {

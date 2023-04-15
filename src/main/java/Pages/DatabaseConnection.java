@@ -38,6 +38,7 @@ public class DatabaseConnection {
     public User getUserFromDatabase(String n) {
 
         String DBusername, DBuserPassword, DBuserFirstName, DBuserLastName,DBuserEmail;
+        int DBuserID;
         String getUserSQL = "SELECT * FROM USERS WHERE userName = ?";
 
         PreparedStatement statement = null;
@@ -52,7 +53,8 @@ public class DatabaseConnection {
                         DBuserFirstName = result.getString("firstName");
                         DBuserLastName = result.getString("lastName");
                         DBuserEmail = result.getString("email");
-                        frame.setCurrentUser(new User(DBusername,DBuserFirstName,DBuserLastName,DBuserPassword,DBuserEmail));
+                        DBuserID = result.getInt("userID");
+                        frame.setCurrentUser(new User(DBuserID,DBusername,DBuserFirstName,DBuserLastName,DBuserPassword,DBuserEmail));
                         System.out.println("Welkom" + frame.getCurrentUser().getUserName());
                     }
                     return frame.getCurrentUser();

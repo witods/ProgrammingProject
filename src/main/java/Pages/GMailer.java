@@ -31,7 +31,7 @@ import static javax.mail.Message.RecipientType.TO;
 
 public class GMailer {
 
-    private static final String TEST_EMAIL = "noreplyGroep3@gmail.com";
+    private static final String TEST_EMAIL = "noreplygroep3@gmail.com";
     private final Gmail service;
 
     public GMailer() throws Exception {
@@ -41,7 +41,7 @@ public class GMailer {
                 .setApplicationName("Test Mailer")
                 .build();
     }
-
+    
     private static Credential getCredentials(final NetHttpTransport httpTransport, GsonFactory jsonFactory)
             throws IOException {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(GMailer.class.getResourceAsStream("/credentials.json")));

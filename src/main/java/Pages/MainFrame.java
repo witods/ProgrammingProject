@@ -28,10 +28,11 @@ public class MainFrame extends JFrame {
         //TEST SPACE INVADERS
         //gameCanvas = new MainGame();
         //this.getContentPane().add(gameCanvas);
-
+        this.setSize(1200,900);
         this.setLocationRelativeTo(null);
+        this.pack();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(false);
+        this.setResizable(true);
 
 
 
