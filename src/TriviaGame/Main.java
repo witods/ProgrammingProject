@@ -17,7 +17,7 @@ import java.util.*;
  * When the game loop is ended, the user can see the number of questions that they answered + the amount of credits won/lost
  * @link https://opentdb.com/api_config.php
  */
-public class TriviaGameConsoleApp {
+public class Main {
     public static void main(String[] args) throws IOException {
         //TODO load the available credits of the user.
         int availableCredits = 500;
