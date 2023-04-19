@@ -1,5 +1,7 @@
-package Pages.TriviaGame;
+package TriviaGame;
 
+import TriviaGame.Results;
+import TriviaGame.Trivia;
 import com.google.gson.Gson;
 
 import javax.swing.*;

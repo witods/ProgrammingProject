@@ -1,5 +1,6 @@
 package TriviaGame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,9 +9,9 @@ import java.util.List;
  */
 public class Trivia {
     private int response_code;
-    private List <Results> results;
+    private ArrayList<Results> results;
 
-    public List<Results> getResults() {
+    public ArrayList<Results> getResults() {
         return results;
     }
 
