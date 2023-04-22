@@ -1,6 +1,7 @@
 package checkuserpassword;
 
 import Pages.DatabaseConnection;
+import Pages.PasswordEncryption;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,13 +11,13 @@ import java.sql.SQLException;
 public class CheckUsernameAndPassword {
     private String username="wouter";
     private String password="123456789";
+    private String hashedPassword=PasswordEncryption.hashPassword(password);
     //private DatabaseConnection databaseConnection = new DatabaseConnection();
     //private Connection connection;
     //private String sqlquerry="select *from user";
     public CheckUsernameAndPassword(String username, String password){
         this.username=username;
-        this.password=password;
-
+        this.password=hashedPassword;
     }
 
     public boolean check(){

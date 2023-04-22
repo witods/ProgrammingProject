@@ -1,8 +1,14 @@
 package Pages;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
@@ -14,6 +20,7 @@ public class HangMan extends JFrame {
     private char[] lettersGuessed;
     private ArrayList<JButton> btns = new ArrayList<JButton>();
     public JPanel mainPanel;
+    private JMenuBar menuBar = new JMenuBar();
     private JButton btn1;
     private JButton btn2;
     private JButton btn3;
@@ -58,6 +65,8 @@ public class HangMan extends JFrame {
     }
 
     public HangMan() {
+        initializeMenu();
+
         String[] wordAndHint = getRandomWord();
         wordToGuess = wordAndHint[0];
         hint = wordAndHint[1];
@@ -77,7 +86,6 @@ public class HangMan extends JFrame {
         }
 
         btnRestart.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 startNewGame();
             }
@@ -85,7 +93,6 @@ public class HangMan extends JFrame {
 
         for (JButton btn : btns) {
             btn.addActionListener(new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) {
                     char letter = btn.getText().toLowerCase().charAt(0);
                     btn.setEnabled(false);
@@ -93,6 +100,30 @@ public class HangMan extends JFrame {
                 }
             });
         }
+    }
+
+    public void initializeMenu() {
+        setJMenuBar(menuBar);
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem importItem = new JMenuItem("Import words via .csv file");
+        fileMenu.add(importItem);
+        menuBar.add(fileMenu);
+
+        importItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                chooser.setDialogTitle("Open a .csv file");
+
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
+                chooser.setFileFilter(filter);
+
+                int result = chooser.showOpenDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = chooser.getSelectedFile();
+                    importNewWords(selectedFile);
+                }
+            }
+        });
     }
 
     private void startNewGame() {
@@ -173,6 +204,47 @@ public class HangMan extends JFrame {
             sb.append(letter).append(" ");
         }
         lblEncryptedWord.setText(sb.toString());
+    }
+
+    private void importNewWords(File file) {
+        PreparedStatement pstmt = null;
+
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        Connection connection = databaseConnection.getConnection();
+
+        try {
+            String insertQuery = "INSERT INTO WORDS (word, hint) VALUES (?, ?)";
+            pstmt = connection.prepareStatement(insertQuery);
+
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line = null;
+
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(";");
+
+                pstmt.setString(1, fields[0]);
+                pstmt.setString(2, fields[1]);
+
+                pstmt.executeUpdate();
+            }
+
+            System.out.println("CSV file loaded to database successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private String getCredits() {
