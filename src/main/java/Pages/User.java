@@ -6,7 +6,6 @@ public class User {
     private String userName;
     private String userFirstName;
     private String userLastName;
-    private String userPassword;
     private String userMail;
     private int userCredits;
     private int userBet;
@@ -14,13 +13,12 @@ public class User {
     private Timestamp recoveryTime;
 
     //Constructor die variablen initialiseerd met gegevens uit de database
-    public User(int ID,String uName,String uFirstName, String uLastName, String p, String m) {
+    public User(int ID,String uName,String uFirstName, String uLastName, String m) {
 
         this.userID = ID;
         this.userName = uName;
         this.userFirstName = uFirstName;
         this.userLastName = uLastName;
-        this.userPassword = p;
         this.userMail = m;
     }
 
@@ -32,13 +30,6 @@ public class User {
 
     public void setUserName(String n) {
         this.userName = userName;
-    }
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String p) {
-        this.userPassword = userPassword;
     }
 
     public String getUserMail() {

@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class LoginPage {
 
@@ -22,7 +25,6 @@ public class LoginPage {
 
     //Mainframe wordt doorgegeven om aan de user en database connectie te kunnen aanroepen
     public LoginPage(MainFrame f) {
-
         loginButton.addActionListener(new LoginListener());
         createAccountButton.addActionListener(new CreateAccountListener());
         forgotPasswordButton.addActionListener(new ForgotPasswordListener());
@@ -35,14 +37,46 @@ public class LoginPage {
         return  this.loginPanel;
     }
 
+    public int checkUsername(String s) {
+        String userNamesSQL = "SELECT userID,userName FROM USERS WHERE userName = '" + s +"'";
+        PreparedStatement statement;
+        ResultSet resultSet;
+        try {
+            statement = this.frame.databaseConnection.getConnection().prepareStatement(userNamesSQL);
+            resultSet = statement.executeQuery();
 
+            if(resultSet.first()){
+
+                    userNameMessage.setForeground(Color.green);
+                    userNameMessage.setText("Existing username");
+                    return resultSet.getInt("userID");
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
     //Controleer of het ingegeven wachtwoord overeenkomt met de currentUser
-    public void checkPassword(User u) {
+    public void checkPassword(int i, String p) {
+        String getPasswordSQL = "SELECT encryptedPassword FROM ENCRYPTEDDATA WHERE userID = ?";
+        PreparedStatement statement;
+        ResultSet resultSet;
 
-        String passwordInput = new String(inpPassword.getPassword());
-        if(u.getUserPassword().equals(passwordInput)) {
-            //frame.getHomePage();
-        } else passwordMessage.setText("Wrong password, try again");
+        try {
+            statement = this.frame.databaseConnection.getConnection().prepareStatement(getPasswordSQL);
+            statement.setInt(1,i);
+            resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                if(PasswordEncryption.checkPassword(p,resultSet.getString("encryptedPassword"))) {
+                    frame.databaseConnection.getUserFromDatabase(inpUsername.getText());
+                    frame.getHomePage();
+                }
+                else passwordMessage.setText("Wrong password, try again");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
     public class LoginListener implements ActionListener {
 
@@ -51,16 +85,14 @@ public class LoginPage {
             userNameMessage.setText("");
             passwordMessage.setText("");
             String usernameInput = inpUsername.getText();
-            frame.databaseConnection.getUserFromDatabase(usernameInput);
-            if(frame.getCurrentUser()!=null){
-                userNameMessage.setForeground(Color.green);
-                userNameMessage.setText("Existing username");
-                checkPassword(frame.getCurrentUser());
+            String passwordInput = new String(inpPassword.getPassword());
+            int userID = checkUsername(usernameInput);
+            if (userID > 0) {
+                checkPassword(userID, passwordInput);
             } else {
-                userNameMessage.setForeground(new Color(116,15,0));
+                userNameMessage.setForeground(new Color(116, 15, 0));
                 userNameMessage.setText("Invalid username");
             }
-
         }
     }
 

@@ -10,7 +10,7 @@
     </properties>
     <border type="none"/>
     <children>
-      <grid id="df08" binding="mainPanel" layout-manager="GridLayoutManager" row-count="7" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="df08" binding="mainPanel" layout-manager="GridLayoutManager" row-count="7" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="40" left="40" bottom="40" right="40"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -478,11 +478,6 @@
               <text value="I ALREADY HAVE AN ACCOUNT"/>
             </properties>
           </component>
-          <hspacer id="74e3">
-            <constraints>
-              <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
         </children>
       </grid>
     </children>

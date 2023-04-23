@@ -94,6 +94,7 @@ public class ForgotPassword {
             }else sendRecoveryMessage.setText("Couldnt fetch a recovery code");
             GMailer mailer = new GMailer();
             mailText += frame.getCurrentUser().getRecoverCode();
+            mailText+= ". This code expires in 15 minutes.";
             mailer.sendMail(frame.getCurrentUser().getUserMail(),"Recovery Code PixelPlaytime",mailText);
         } catch (Exception e) {
             e.printStackTrace();

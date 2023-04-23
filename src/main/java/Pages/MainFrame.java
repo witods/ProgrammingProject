@@ -1,11 +1,8 @@
 package Pages;
 
-import MainApp.Main;
 import SpaceInvaders.MainGame;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
-import java.awt.*;
 
 public class MainFrame extends JFrame {
 
@@ -14,6 +11,7 @@ public class MainFrame extends JFrame {
     private CreateAccount createAccount;
     //private HomePage homePage;
     private ForgotPassword recoveryPage;
+    private HomePage homePage;
     private User currentUser;
     public DatabaseConnection databaseConnection;
     private MainGame gameCanvas;
@@ -27,8 +25,8 @@ public class MainFrame extends JFrame {
 
         //TEST SPACE INVADERS
         //gameCanvas = new MainGame();
-        //this.getContentPane().add(gameCanvas);
-        this.setSize(1200,900);
+       // this.getContentPane().add(gameCanvas);
+        //this.setSize(1200,900);
         this.setLocationRelativeTo(null);
         this.pack();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -60,13 +58,6 @@ public class MainFrame extends JFrame {
         this.setContentPane(createAccount.getMainPanel());
         this.revalidate();
     }
-    //Tonen van Home Page na succesvol inloggen
-
-    //public void getHomePage(){
-    //this.setContentPane(homePage.getMainPanel());
-    //this.revalidate();
-    //}
-
     //Tonen van Forgot Password Page
 
     public void getForgotPassword() {
@@ -76,7 +67,13 @@ public class MainFrame extends JFrame {
         this.setContentPane(recoveryPage.getMainPanel());
         this.revalidate();
     }
-
+    public void getHomePage(){
+        createAccount = null;
+        recoveryPage = null;
+        homePage = new HomePage(this);
+        this.setContentPane(homePage.getMainPanel());
+        this.revalidate();
+    }
     //Getters en setters voor de currentUser (wordt enkel hier aangemaakt)
     public void setCurrentUser(User u) {
         this.currentUser = u;

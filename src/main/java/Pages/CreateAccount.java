@@ -1,6 +1,7 @@
 package Pages;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -42,6 +43,8 @@ public class CreateAccount {
     //Controleren of een ingegeven gebruikersnaam al bestaat in de database
     public boolean checkValidUsername() throws SQLException {
 
+        PasswordEncryption encryption = new PasswordEncryption();
+
         String getUsersString = "SELECT userName from USERS";
         ArrayList<String> existingUsernames = new ArrayList<>();
         PreparedStatement getExistingUsers;
@@ -55,9 +58,13 @@ public class CreateAccount {
             existingUsernames.add(name);
         }
         if (existingUsernames.contains(inpUsername.getText())&&inpUsername.getText().length() <= 3){
+            userNameMessage.setForeground(new Color(116, 15, 0));
             userNameMessage.setText("Invalid username");
             return false;
-        }else userNameMessage.setText("Valid username"); return true;
+        }else {
+            userNameMessage.setForeground(Color.green);
+            userNameMessage.setText("Valid username");
+        } return true;
     }
     //Controleren of een ingegeven mail al bestaat in de database
     public boolean checkValidMail() throws SQLException {
@@ -75,10 +82,19 @@ public class CreateAccount {
                 existingMails.add(name);
             }
             if (existingMails.contains(inpEmail.getText())){
+                emailMessage.setForeground(new Color(116, 15, 0));
                 emailMessage.setText("Mail already in use");
                 return false;
-            }else if(inpEmail.getText().contains("@")&&inpEmail.getText().contains(".")) return true;
-            else emailMessage.setText("Invalid Email adress"); return false;
+            }else if(inpEmail.getText().contains("@")&&inpEmail.getText().contains(".")){
+                emailMessage.setForeground(Color.green);
+                emailMessage.setText("Valid Email adress.");
+                return true;
+            }
+            else {
+                emailMessage.setForeground(new Color(116, 15, 0));
+                emailMessage.setText("Invalid Email adress");
+                return false;
+            }
         }
     public boolean checkValidPassword(){
         String pass = new String(inpPassword.getPassword());
@@ -91,21 +107,39 @@ public class CreateAccount {
     }
     //Als alle velden geldig zijn user wegschrijven naar de database
     public void createAccount() throws SQLException {
-        String createString;
-        createString = "INSERT INTO USERS (userName, firstName, lastName, email, password) values(?,?,?,?,?)";
-        PreparedStatement createUserQuery = frame.databaseConnection.getConnection().prepareStatement(createString);;
-
+        String createString = "INSERT INTO USERS (userName, firstName, lastName, email) values(?,?,?,?)";
+        String getNewUserID = "SELECT userID FROM USERS WHERE userName = ?";
+        String encryptPass = "INSERT INTO ENCRYPTEDDATA (userID,encryptedPassword) values(?,?)";
+        PreparedStatement createUserQuery = frame.databaseConnection.getConnection().prepareStatement(createString);
+        PreparedStatement getNewIDStatement = frame.databaseConnection.getConnection().prepareStatement(getNewUserID,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+        ResultSet resultSet;
+        int newUserID = 0;
         if((new String(inpPassword.getPassword()).equals(new String(inpConfirmPassword.getPassword())))){
 
                 createUserQuery.setString(1,inpUsername.getText());
                 createUserQuery.setString(2,inpFirstName.getText());
                 createUserQuery.setString(3,inpLastName.getText());
                 createUserQuery.setString(4,inpEmail.getText());
-                createUserQuery.setString(5,new String(inpPassword.getPassword()));
-
-                if(createUserQuery.executeUpdate()!=0){
-                    System.out.println("User aangemaakt");
-                }else System.out.println("User niet aangemaakkt");
+                if(createUserQuery.executeUpdate()!=0) getNewIDStatement.setString(1,inpUsername.getText());
+                resultSet = getNewIDStatement.executeQuery();
+                if(resultSet.first()) newUserID = resultSet.getInt("userID");
+                String encryptedPassword = PasswordEncryption.hashPassword(new String(inpPassword.getPassword()));
+                createUserQuery = frame.databaseConnection.getConnection().prepareStatement(encryptPass,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                if (newUserID!=0) {
+                    createUserQuery.setInt(1,newUserID);
+                    createUserQuery.setString(2,encryptedPassword);
+                }
+                if(createUserQuery.executeUpdate()!=0) {
+                    createAccountLabel.setForeground(Color.green);
+                    createAccountLabel.setText("Creating account succesfull, sending you back to the login page.");
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    frame.getLoginPage();
+                }
+                else System.out.println("User niet aangemaakkt");
         }
         else confirmPasswordLabel.setText("Enter the same password twice");
 

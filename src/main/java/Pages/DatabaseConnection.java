@@ -35,33 +35,33 @@ public class DatabaseConnection {
         }
     }
 
-    public User getUserFromDatabase(String n) {
+    public void getUserFromDatabase(String n) {
 
-        String DBusername, DBuserPassword, DBuserFirstName, DBuserLastName,DBuserEmail;
-        int DBuserID;
-        String getUserSQL = "SELECT * FROM USERS WHERE userName = ?";
+        String currentUsername,currentUserFirstName,currentUserLastName,currentUserEmail;
+        int currentUserID;
+        String getUserSQL = "SELECT userID,userName,firstName,lastName,email FROM USERS WHERE userName = ?";
 
-        PreparedStatement statement = null;
+        PreparedStatement statement;
+        ResultSet result;
+
         try {
             statement = frame.databaseConnection.getConnection().prepareStatement(getUserSQL, ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
             statement.setString(1,n);
-            ResultSet result = statement.executeQuery();
+            result = statement.executeQuery();
 
                     if(result.first()){
-                        DBusername = result.getString("userName");
-                        DBuserPassword = result.getString("password");
-                        DBuserFirstName = result.getString("firstName");
-                        DBuserLastName = result.getString("lastName");
-                        DBuserEmail = result.getString("email");
-                        DBuserID = result.getInt("userID");
-                        frame.setCurrentUser(new User(DBuserID,DBusername,DBuserFirstName,DBuserLastName,DBuserPassword,DBuserEmail));
+                        currentUserID = result.getInt("userID");
+                        currentUsername = result.getString("userName");
+                        currentUserFirstName = result.getString("firstName");
+                        currentUserLastName = result.getString("lastName");
+                        currentUserEmail = result.getString("email");
+
+                        frame.setCurrentUser(new User(currentUserID,currentUsername,currentUserFirstName,currentUserLastName,currentUserEmail));
                         System.out.println("Welkom" + frame.getCurrentUser().getUserName());
                     }
-                    return frame.getCurrentUser();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
     }
 }
