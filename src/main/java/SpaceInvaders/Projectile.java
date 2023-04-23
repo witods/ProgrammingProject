@@ -13,17 +13,17 @@ public class Projectile {
     private Rectangle hitbox;
     private String projectileType;
 
-    public Projectile(int x, int y){
+    public Projectile(int x, int y,int d){
         this.projectileX = x;
         this.projectileY = y;
         this.projectileWidth = 3;
         this.projectileHeight = 12;
         this.hitbox = new Rectangle(projectileX,projectileY,projectileWidth,projectileHeight);
-        this.damage = 1;
+        this.damage = d;
         color = Color.cyan;
     }
-    public Projectile(int x, int y,String s){
-        this(x,y);
+    public Projectile(int x, int y,String s,int d){
+        this(x,y,d);
         projectileType = s;
         setupProjectile();
         this.hitbox = new Rectangle(projectileX,projectileY,projectileWidth,projectileHeight);
@@ -36,7 +36,7 @@ public class Projectile {
 
    public void setupProjectile(){
         switch(projectileType){
-            case "cannon" : color = new Color(6,63,185); projectileWidth = 18; projectileHeight = 18; damage = 3;
+            case "cannon" : color = new Color(6,63,185); projectileWidth = 18; projectileHeight = 18;
             break;
             case "enemy" : color = Color.yellow; projectileWidth = 2; projectileHeight = 8;
             break;

@@ -30,9 +30,8 @@ public class Player {
 
     }
     public void healthDown(Projectile p){
-        switch (p.getProjectileType()){
-            case "bullet" : this.hitpoints-=1;
-        }
+        this.hitpoints -= p.getDamage();
+        if(hitpoints <=0);
     }
     public int getPlayerHitpoints() {return this.hitpoints;}
 
@@ -82,19 +81,19 @@ public class Player {
     }
     public void shootNormalBullet(ArrayList a){
         if(switchCannons){
-            a.add(new Projectile(getPlayerX()+10,getPlayerY()-15));
+            a.add(new Projectile(getPlayerX()+10,getPlayerY()-15,1));
             switchCannons = false;
         }else {
-            a.add(new Projectile(getPlayerX()+getPlayerWidth()-13,getPlayerY()-15));
+            a.add(new Projectile(getPlayerX()+getPlayerWidth()-13,getPlayerY()-15,1));
             switchCannons = true;
         }
     }
     public void shootCannon(ArrayList a){
-        a.add(new Projectile(getPlayerX()+getPlayerWidth()/2,getPlayerY()-27,"cannon"));
+        a.add(new Projectile(getPlayerX()+getPlayerWidth()/2,getPlayerY()-27,"cannon",3));
     }
     public void shootRapidFire(ArrayList a){
-        a.add(new Projectile(getPlayerX()+(playerWidth/2),getPlayerY()-25));
-        a.add(new Projectile(getPlayerX()+6,getPlayerY()-15));
-        a.add(new Projectile(getPlayerX()+getPlayerWidth()-6,getPlayerY()-15));
+        a.add(new Projectile(getPlayerX()+(playerWidth/2),getPlayerY()-25,1));
+        a.add(new Projectile(getPlayerX()+6,getPlayerY()-15,1));
+        a.add(new Projectile(getPlayerX()+getPlayerWidth()-6,getPlayerY()-15,1));
     }
 }

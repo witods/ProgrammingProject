@@ -62,7 +62,7 @@ public class Enemy {
     public void shootProjectile(ArrayList<Projectile> a){
         int random = (int) (Math.random()*350);
         if(random==1){
-            a.add(new Projectile(enemyX+(enemyWidth/2),enemyY+enemyHeight, "enemy"));
+            a.add(new Projectile(enemyX+(enemyWidth/2),enemyY+enemyHeight, "enemy",1));
         }
     }
     public boolean enemyHit(int x,ArrayList<PowerUp> a){

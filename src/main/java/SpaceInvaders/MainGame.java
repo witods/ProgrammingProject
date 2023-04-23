@@ -52,7 +52,7 @@ public class MainGame extends Canvas {
 
     public void setupGame() {
 
-        player = new Player(currentWidth / 15, currentHeight / 16,5);
+        player = new Player(currentWidth / 15, currentHeight / 16,10);
         int playerStartX = (currentWidth / 2) - (player.getPlayerWidth() / 2);
         int playerStartY = currentHeight - player.getPlayerHeight();
         player.setPlayerXandY(playerStartX, playerStartY);
@@ -83,7 +83,7 @@ public class MainGame extends Canvas {
 
     public ArrayList<Projectile> getEnemyBullets() {return enemyBullets;}
     public void createEnemies(){
-        enemies.add(new Enemy(-30,35,25,25,1,this));
+        enemies.add(new Enemy(-30,35,25,25,5,this));
     }
     public void setEnemiesKilled(int x){this.enemiesKilled+=x;}
     public void setEMPActive(boolean EMPActive) {
@@ -195,11 +195,15 @@ public class MainGame extends Canvas {
 
     public void checkEnemyBulletCollision(Projectile p){
         for(Obstacle o : obstacles){
-            if(p.getHitbox().intersects(o.getHitbox()))enemyBullets.remove(p);
+            if(p.getHitbox().intersects(o.getHitbox())){
+                enemyBullets.remove(p);
+                o.hitTaken();
+            }
         }
         if(p.getHitbox().intersects(player.getPlayerHitbox())){
             player.healthDown(p);
             enemyBullets.remove(p);
+            if(player.getPlayerHitpoints()<=0) gameOver();
         }
     }
     public void checkBlackholeCollision(Blackhole b){
@@ -209,6 +213,10 @@ public class MainGame extends Canvas {
             if(b.getHitbox().intersects(e.getHitbox())) itr.remove();
         }
 
+    }
+    public void gameOver(){
+        gameRunning = false;
+        moveBulletsLoop.stop();
     }
     public class MovementActionListener extends KeyAdapter {
         @Override

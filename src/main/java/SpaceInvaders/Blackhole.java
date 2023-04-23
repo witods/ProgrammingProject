@@ -1,11 +1,6 @@
 package SpaceInvaders;
 
-import MainApp.Main;
-import com.google.common.util.concurrent.Runnables;
-
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Blackhole extends PowerUp implements Runnable{
 
