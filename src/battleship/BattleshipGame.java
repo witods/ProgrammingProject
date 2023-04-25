@@ -33,7 +33,6 @@ public class BattleshipGame {
     public BattleshipGame() {
         this.content = new BattleshipContent();;
         this.main = new MainGui("Zeeslag", content.createBattleShipContent());;
-//        this.playerField = new Field();
         this.labels = labels = content.getLabels();
         content.getRestartBtn().addActionListener(new RestartGameListener());
         startGame();
@@ -52,7 +51,7 @@ public class BattleshipGame {
         moves = 0;
         playerField = new Field();
         clearField();
-//        playerField.printField();
+
         for (int i=0; i < labels.size(); i++) {
             JLabel lbl = labels.get(i);
             int position = i;
@@ -70,46 +69,47 @@ public class BattleshipGame {
                                 lbl.setText("X");
                                 break;
                             case 1:
+                                Ship battleShip1 = playerField.getBattleship1();
                                 lbl.setBackground(new Color(192,26, 75));
-                                if (playerField.getBattleship1().getTotalHits() == 0) {
-                                    text.setText(playerField.getBattleship1().getName() + " gezonken!");
-//                                    System.out.println(playerField.getBattleship1().getName() + " gezonken!");
+                                if (battleShip1.getTotalHits() == 0) {
+                                    text.setText(battleShip1.getName() + " gezonken!");
+                                    sinkShip(battleShip1.getStartPosition(), battleShip1.getLength(), battleShip1.getDirection());
                                     shipsDestroyed ++;
                                 }
                                 break;
                             case 2:
+                                Ship battleShip2 = playerField.getBattleship2();
                                 lbl.setBackground(new Color(192,26, 75));
-                                if (playerField.getBattleship2().getTotalHits() == 0) {
-                                    text.setText(playerField.getBattleship2().getName() + " gezonken!");
-//                                    System.out.println(playerField.getBattleship2().getName() + " gezonken!");
-
+                                if (battleShip2.getTotalHits() == 0) {
+                                    text.setText(battleShip2.getName() + " gezonken!");
+                                    sinkShip(battleShip2.getStartPosition(), battleShip2.getLength(), battleShip2.getDirection());
                                     shipsDestroyed ++;
                                 }
                                 break;
                             case 3:
+                                Ship battleShip3 = playerField.getBattleship3();
                                 lbl.setBackground(new Color(192,26, 75));
-                                if (playerField.getBattleship3().getTotalHits() == 0) {
-                                    text.setText(playerField.getBattleship3().getName() + " gezonken!");
-//                                    System.out.println(playerField.getBattleship3().getName() + " gezonken!");
-
+                                if (battleShip3.getTotalHits() == 0) {
+                                    text.setText(battleShip3.getName() + " gezonken!");
+                                    sinkShip(battleShip3.getStartPosition(), battleShip3.getLength(), battleShip3.getDirection());
                                     shipsDestroyed ++;
                                 }
                                 break;
                             case 4:
+                                Ship battleShip4 = playerField.getBattleship4();
                                 lbl.setBackground(new Color(192,26, 75));
-                                if (playerField.getBattleship4().getTotalHits() == 0) {
-                                    text.setText(playerField.getBattleship4().getName() + " gezonken!");
-//                                    System.out.println(playerField.getBattleship4().getName() + " gezonken!");
-
+                                if (battleShip4.getTotalHits() == 0) {
+                                    text.setText(battleShip4.getName() + " gezonken!");
+                                    sinkShip(battleShip4.getStartPosition(), battleShip4.getLength(), battleShip4.getDirection());
                                     shipsDestroyed ++;
                                 }
                                 break;
                             case 5:
+                                Ship battleShip5 = playerField.getBattleship5();
                                 lbl.setBackground(new Color(192,26, 75));
-                                if (playerField.getBattleship5().getTotalHits() == 0) {
-                                    text.setText(playerField.getBattleship5().getName() + " gezonken!");
-//                                    System.out.println(playerField.getBattleship5().getName() + " gezonken!");
-
+                                if (battleShip5.getTotalHits() == 0) {
+                                    text.setText(battleShip5.getName() + " gezonken!");
+                                    sinkShip(battleShip5.getStartPosition(), battleShip5.getLength(), battleShip5.getDirection());
                                     shipsDestroyed ++;
                                 }
                                 break;
@@ -131,6 +131,24 @@ public class BattleshipGame {
                 }
 
             });
+        }
+    }
+
+    /**
+     * This method changes the color of a sunken ship
+     * @param startPosition
+     * @param length
+     * @param direction
+     */
+    private void sinkShip(int startPosition, int length, int direction) {
+        if (direction == 0) {
+            for (int i = startPosition; i < startPosition+length; i++) {
+                labels.get(i).setBackground(new Color(107, 15, 42));
+            }
+        } else if (direction == 1) {
+            for (int i = startPosition; i < startPosition+(10*(length)); i+=10) {
+                labels.get(i).setBackground(new Color(107, 15, 42));
+            }
         }
     }
 
