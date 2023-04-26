@@ -2,41 +2,51 @@ package blackjack;
 
 import java.util.ArrayList;
 
+/**
+ * A hand of cards to play with
+ */
 public class Hand {
 
-    private ArrayList<Kaart> hand;
+    private ArrayList<Card> hand;
 
     public Hand(){
-        hand = new ArrayList<Kaart>();
+        hand = new ArrayList<Card>();
     }
 
     /**
-     * neem de bovenste kaart van de boek
-     * @param boekKaarten de boek waar de kaarten van genomen worden
+     * Take a single card from the top of this deck and add it to the hand, removing it from the previous deck
+     * @param deck The deck of cards we're taking from
      */
-    public void neemkaartvanboek(BoekKaarten boekKaarten){
-        hand.add(boekKaarten.neemKaart());
+    public void takeCardFromDeck(Deck deck){
+        hand.add(deck.takeCard());
     }
 
-
+    /**
+     * Add a single card to this hand
+     * @param c The card being added
+     */
     /**
      *
-     * @param verwijderBoekKaarten De boek waar de kaart naar verwijderd wordt.
+     * @param discardDeck The deck we're discarding this hand to
      */
-    public void verwijderHandNaarBoek(BoekKaarten verwijderBoekKaarten){
+    public void discardHandToDeck(Deck discardDeck){
 
         //copy cards from hand to discardDeck
-        verwijderBoekKaarten.addCards(hand);
+        discardDeck.addCards(hand);
 
         //clear the hand
         hand.clear();
 
     }
 
+    /**
+     *
+     * @return The hand with all its cards in a single line String
+     */
     public String toString(){
         String output = "";
-        for(Kaart kaart : hand){
-            output += kaart + " - ";
+        for(Card card: hand){
+            output += card + " - ";
         }
         return output;
     }
@@ -44,42 +54,51 @@ public class Hand {
 
     /**
      *
-     * @return de waarde als een integer
-     *
+     * @return The calculated numerical value of the hand as an integer
      */
-    public int berekenWaarde(){
+    public int calculatedValue(){
 
-        //variabele om het aantal azen te tellen
-        int waarde = 0;
-        int aantalAzen = 0;
+        //variable to count number of aces, and current total value
+        int value = 0;
+        int aceCount = 0;
 
-        //Voor elke kaart in je hand
-        for(Kaart kaart : hand){
-            waarde += kaart.getValue();
-            if (kaart.getValue() == 11){
-                aantalAzen ++;
+        //For each card in this hand
+        for(Card card: hand){
+            //Add the card value to the hand
+            value += card.getValue();
+            //Count how many aces have been added
+            if (card.getValue() == 11){
+                aceCount ++;
             }
         }
-
-        //In een scenario met meerdere azen. Kan de aas de waarde 1 of 11 aannemen.
-        // Indien mogelijk zet de waarde van de aas naar 1, zodat we onder de 21 blijven
-        if (waarde > 21 && aantalAzen > 0){
-            while(aantalAzen > 0 && waarde > 21){
-                aantalAzen --;
-                waarde -= 10;
+        //if we have a scenario where we have multiple aces, as may be the case of drawing 10, followed by two or more aces, (10+11+1 > 21)
+        //go back and set each ace to 1 until get back under 21, if possible
+        if (value > 21 && aceCount > 0){
+            while(aceCount > 0 && value > 21){
+                aceCount --;
+                value -= 10;
             }
         }
-        return waarde;
+        return value;
 
     }
 
 
     /**
      *
-     * @param idx de index van de kaart die we hebben
-     * @return de kaart die we hebben
+     * @param idx the index of the card we're getting
+     * @return the card we got
      */
-    public Kaart neemKaart(int idx){
+    public Card getCard(int idx){
         return hand.get(idx);
     }
+
+    /**
+     * Get the number of cards in this hand
+     * @return
+     */
+    public int getHandSize(){
+        return hand.size();
+    }
+
 }
