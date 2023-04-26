@@ -13,7 +13,7 @@ public class Game extends JPanel {
     // Constants
     public static final int CARD_WIDTH = 100;
     public static final int CARD_HEIGHT = 145;
-    public static final String IMAGE_DIR = "blackjack/imgcards/";
+    public static final String IMAGE_DIR = "src/blackjack/imgcards/";
 
     // Declare instance vars needed for Game class
     private Deck deck, discarded;
