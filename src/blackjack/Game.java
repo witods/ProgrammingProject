@@ -59,6 +59,7 @@ public class Game extends JPanel {
         // Size of JPanel
         this.setSize(800, 1000);
 
+
         // Make Buttons for "Hit" "Stand" and "Next Round" actions.
         // setBounds is used to define their locations and sizes
         btnHit = new JButton("Hit");
@@ -149,7 +150,9 @@ public class Game extends JPanel {
 
         // hand values on display
         lblDealerHandVal = new JLabel("Dealer's Hand Value:");
+        lblDealerHandVal.setFont(basicfont);
         lblPlayerHandVal = new JLabel("Player's Hand Value:");
+        lblPlayerHandVal.setFont(basicfont);
         lblDealerHandVal.setBounds(20, 280, 300, 50);
         lblPlayerHandVal.setBounds(20, 530, 300, 50);
         this.add(lblDealerHandVal);
